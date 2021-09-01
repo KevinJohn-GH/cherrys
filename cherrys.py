@@ -34,7 +34,7 @@ class RedisSession(Session):
         for k, v in kwargs.items():
             setattr(cls, k, v)
 
-        cls.cache = redis.Redis(
+        cls.cache = redis.StrictRedis(
             host=cls.host,
             port=cls.port,
             db=cls.db,
@@ -56,7 +56,7 @@ class RedisSession(Session):
             (self._data, expiration_time),
             pickle.HIGHEST_PROTOCOL)
 
-        result = self.cache.setex(self.id, pickled_data, self.timeout * 60)
+        result = self.cache.setex(self.id, self.timeout * 60, pickled_data)
 
         if not result:
             raise AssertionError("Session data for id %r not set." % self.id)
