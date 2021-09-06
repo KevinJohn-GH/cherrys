@@ -99,7 +99,7 @@ class RedisSession(Session):
             (self._data, expiration_time),
             pickle.HIGHEST_PROTOCOL)
 
-        result = cache.setex(self.id, pickled_data, self.timeout * 60)
+        result = cache.setex(self.id, self.timeout * 60, pickled_data)
 
         if not result:
             kwargs = cache.connection_pool.connection_kwargs
